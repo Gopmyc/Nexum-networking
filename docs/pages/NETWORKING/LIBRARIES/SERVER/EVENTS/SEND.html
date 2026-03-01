@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="../../../../../style.css" rel="stylesheet">
+<title>Nexum Networking Documentation</title>
+</head>
+<body>
+<div class="container">
+	<aside class="sidebar"> <h2>📘 Nexum Networking Documentation </h2> <div class="sidebar-search"> <input type="text" id="sidebarSearch" placeholder="Search..." /> </div>
+ <nav> <ul id="sidebar-menu"></ul> </nav> </aside>
+   <main class="content">
+<section class='global-description'>
+	<h2>Overview</h2>
+	<p><br>	Server-side send event handler of the Networking system.<br><br>	This event is responsible for transmitting encoded packets from the<br>	server to a specific connected client. The system validates the client<br>	identity before attempting to send the packet through the peer<br>	connection.<br><br>	If the target client is not registered in the server registry, the<br>	transmission is aborted and a diagnostic message is logged.<br></p>
+</section>
+<section class='doc-block' id='LIBRARY:Call'>
+<h2><span class='state-dot' style='background:#3498db;'></span> LIBRARY:Call</h2>
+<p><br>	Handles the transmission of a packet to a client.<br><br>	The function retrieves the connection identifier from the peer object<br>	and checks whether the client exists in the server registry.<br><br>	If the client is not registered, the operation is aborted and an<br>	error message is printed indicating that the server attempted to<br>	send data to an unknown client.<br><br>	If the client is valid, the packet data is encoded using the server<br>	CODEC and sent through the peer connection using the specified<br>	channel and transmission flag.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type table'>table</span> :  Server instance</li><li><span class='param-type table'>table</span> :  Event object containing peer, packet data, channel and transmission flag</li></ul></div></section>
+    </main>
+</div>
+<script src="../../../../../root/manifest.js"></script>
+<script src="../../../../../main.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>{buildSidebarMenu(manifest)});</script>
+</body>
+</html>
