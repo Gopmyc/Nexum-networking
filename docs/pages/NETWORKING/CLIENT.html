@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="../../style.css" rel="stylesheet">
+<title>Nexum Networking Documentation</title>
+</head>
+<body>
+<div class="container">
+	<aside class="sidebar"> <h2>📘 Nexum Networking Documentation </h2> <div class="sidebar-search"> <input type="text" id="sidebarSearch" placeholder="Search..." /> </div>
+ <nav> <ul id="sidebar-menu"></ul> </nav> </aside>
+   <main class="content">
+<section class='global-description'>
+	<h2>Overview</h2>
+	<p><br>	The Networking client class of Nexum.  <br>	Manages client-side connection to a Nexum server, packet sending, event handling, hooks,  <br>	encryption and compression of outgoing messages, and integration with the Nexum runtime.  <br>	Allows configuration-based defaults with optional per-connection overrides for secure communication.<br></p>
+</section>
+<section class='doc-block' id='CLASS:Initialize'>
+<h2><span class='state-dot' style='background:#f1c40f;'></span> CLASS:Initialize</h2>
+<p><br>	Initializes the Networking client instance.  <br>	Validates ENet library dependency and optional connection parameters  <br>	(address, port, channels, timeout, encryption key, default encryption/compression).  <br>	Creates an ENet host, connects to the specified server, initializes HOOKS, CODEC, and EVENTS libraries.  <br>	Returns a client instance table containing all network state and handlers.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Optional server IP address</li><li><span class='param-type number'>number</span> :  Optional server port</li><li><span class='param-type number'>number</span> :  Optional maximum number of channels</li><li><span class='param-type number'>number</span> :  Optional message timeout</li><li><span class='param-type string'>string</span> :  Optional encryption key</li><li><span class='param-type boolean'>boolean</span> :  Optional default encryption flag</li><li><span class='param-type boolean'>boolean</span> :  Optional default compression flag</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type table'>table</span> :  Client instance containing HOST, PEER, HOOKS, CODEC, EVENTS, DEFAULT_ENCRYPT, DEFAULT_COMPRESS, MESS_TIMEOUT</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:Update'>
+<h2><span class='state-dot' style='background:#f1c40f;'></span> CLASS:Update</h2>
+<p><br>	Processes incoming network events from the server and dispatches them through the EVENTS system.  <br>	Each event is safely executed with xpcall to catch and report errors.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type number'>number</span> :  Optional delta time (iDt)</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+	tInstance:Update(dt)
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:SendToServer'>
+<h2><span class='state-dot' style='background:#f1c40f;'></span> CLASS:SendToServer</h2>
+<p><br>	Sends a packet to the connected server.  <br>	Applies default or provided flags for reliability and unsequenced sending.  <br>	Triggers the 'send' event through EVENTS.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type table'>table</span> :  Packet data</li><li><span class='param-type number'>number</span> :  Optional channel ID (default 0)</li><li><span class='param-type string'>string</span> :  Optional flag ("reliable", "unreliable", "unsequenced")</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")	
+	local tPacket       = tInstance:BuildPacket("MSG_HELLO", {text="Hello Server"}, true, false)
+	tInstance:SendToServer(tPacket, 0, "reliable")
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:BuildPacket'>
+<h2><span class='state-dot' style='background:#f1c40f;'></span> CLASS:BuildPacket</h2>
+<p><br>	Creates a network packet table with optional encryption and compression.  <br>	If flags are not provided, defaults from client configuration are applied.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Message ID</li><li><span class='param-type default'>var</span> :  Packet content</li><li><span class='param-type boolean'>boolean</span> :  Optional encrypt flag</li><li><span class='param-type boolean'>boolean</span> :  Optional compress flag</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type table'>table</span> :  Packet containing ID, CONTENT, ENCRYPTED, COMPRESSED</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+	local tPacket       = tInstance:BuildPacket("MSG_UPDATE", {posX=10, posY=20}, true, true)
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:IsConnected'>
+<h2><span class='state-dot' style='background:#f1c40f;'></span> CLASS:IsConnected</h2>
+<p><br>	Checks if the client is currently connected to the server.<br></p>
+<div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type boolean'>boolean</span> :  true if connected, false otherwise</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+	if tInstance:IsConnected() then
+		print("Connected to server")
+	end
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:AddHook'>
+<h2><span class='state-dot' style='background:#f1c40f;'></span> CLASS:AddHook</h2>
+<p><br>	Registers a callback hook for client-side network events.  <br>	Hooks can be executed on connect, disconnect, send, or receive events.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Hook ID</li><li><span class='param-type function'>function</span> :  Callback function</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+	tInstance:AddHook("onReceive", function(peer, data)
+		print("Received data from server:", data)
+	end)
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:GetPeer'>
+<h2><span class='state-dot' style='background:#f1c40f;'></span> CLASS:GetPeer</h2>
+<p><br>	Returns the ENet peer object representing the connection to the server.<br></p>
+<div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type default'>userdata</span> :  ENet peer</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+	local tPeer         = tInstance:GetPeer()
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:Destroy'>
+<h2><span class='state-dot' style='background:#f1c40f;'></span> CLASS:Destroy</h2>
+<p><br>	Cleans up the networking client instance.  <br>	Disconnects from the server, destroys HOOKS and EVENTS libraries,  <br>	flushes the ENet host, and removes metatable references to fully release resources.<br></p>
+<div class='doc-subblock code-block'><pre><code class='language-lua'>	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+	local sLibraryName	= "CODEC"
+	local tLibrary		= tInstance:GetLibrary(sLibraryName)
+	tInstance:Destroy()
+</code></pre></div></section>
+    </main>
+</div>
+<script src="../../root/manifest.js"></script>
+<script src="../../main.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>{buildSidebarMenu(manifest)});</script>
+</body>
+</html>
