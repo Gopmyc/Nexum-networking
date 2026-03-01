@@ -1,0 +1,22 @@
+@GLOBAL_DESCRIPTION:
+{
+	Client-side send event handler of the Networking system.
+
+	This event is responsible for transmitting packets from the client to the server.
+	The data is encoded using the client CODEC before being sent through the peer connection.
+}
+
+@NAME:	LIBRARY:Call
+@STATE:	CLIENT
+@DESC:
+{
+	Handles sending a packet to the server.
+
+	The function retrieves the connection identifier from the server peer,
+	encodes the packet data using the client CODEC, and sends it through the
+	peer connection using the specified channel and transmission flag.
+}
+
+@PARAM:
+	<table>	: Client instance
+	<table>	: Event object containing server peer, packet data, channel, and transmission flag
