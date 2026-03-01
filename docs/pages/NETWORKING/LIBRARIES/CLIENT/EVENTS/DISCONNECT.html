@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="../../../../../style.css" rel="stylesheet">
+<title>Nexum Networking Documentation</title>
+</head>
+<body>
+<div class="container">
+	<aside class="sidebar"> <h2>📘 Nexum Networking Documentation </h2> <div class="sidebar-search"> <input type="text" id="sidebarSearch" placeholder="Search..." /> </div>
+ <nav> <ul id="sidebar-menu"></ul> </nav> </aside>
+   <main class="content">
+<section class='global-description'>
+	<h2>Overview</h2>
+	<p><br>	Client-side disconnect event handler of the Networking system.<br><br>	This event is triggered when the client disconnects from a server.<br>	It logs the disconnection details and cleans up the client peer reference.<br></p>
+</section>
+<section class='doc-block' id='LIBRARY:Call'>
+<h2><span class='state-dot' style='background:#f1c40f;'></span> LIBRARY:Call</h2>
+<p><br>	Handles a server disconnection event.<br><br>	The function retrieves the connection identifier from the server peer<br>	and prints a log message including the client ID, peer reference, and<br>	timestamp of disconnection.<br><br>	The client peer is then disconnected and the local reference is cleared<br>	to prevent further usage.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type table'>table</span> :  Client instance</li><li><span class='param-type table'>table</span> :  Event object containing the server peer</li></ul></div></section>
+    </main>
+</div>
+<script src="../../../../../root/manifest.js"></script>
+<script src="../../../../../main.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>{buildSidebarMenu(manifest)});</script>
+</body>
+</html>
