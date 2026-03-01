@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="../../style.css" rel="stylesheet">
+<title>Nexum Networking Documentation</title>
+</head>
+<body>
+<div class="container">
+	<aside class="sidebar"> <h2>📘 Nexum Networking Documentation </h2> <div class="sidebar-search"> <input type="text" id="sidebarSearch" placeholder="Search..." /> </div>
+ <nav> <ul id="sidebar-menu"></ul> </nav> </aside>
+   <main class="content">
+<section class='global-description'>
+	<h2>Overview</h2>
+	<p><br>	The Networking server class of Nexum.  <br>	Manages client-server communication, event handling, hooks, message IDs,  <br>	encryption and compression of packets, and integration with the Nexum runtime.  <br>	It allows configuration-based defaults and per-packet overrides for secure and optimized communication.<br></p>
+</section>
+<section class='doc-block' id='CLASS:Initialize'>
+<h2><span class='state-dot' style='background:#3498db;'></span> CLASS:Initialize</h2>
+<p><br>	Initializes the Networking server instance.  <br>	Validates ENet library dependency and required network configuration parameters  <br>	(IP, PORT, MAX_CLIENTS, MAX_CHANNELS, bandwidth, timeout, encryption/compression defaults).  <br>	Creates the ENet host, initializes HOOKS, CODEC, and EVENTS libraries.  <br>	Returns a server instance table containing all network state and handlers.<br></p>
+<div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type table'>table</span> :  Server instance containing HOST, CLIENTS, NETWORK_ID, HOOKS, CODEC, EVENTS, DEFAULT_ENCRYPT, DEFAULT_COMPRESS</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:GetHost'>
+<h2><span class='state-dot' style='background:#3498db;'></span> CLASS:GetHost</h2>
+<p><br>	Returns the underlying ENet host object used for server communication.<br></p>
+<div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type default'>userdata</span> :  ENet host</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+local tHost			= tInstance:GetHost()
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:Update'>
+<h2><span class='state-dot' style='background:#3498db;'></span> CLASS:Update</h2>
+<p><br>	Processes incoming network events and dispatches them through the EVENTS system.<br>	Each event is safely executed with xpcall to catch errors.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type number'>number</span> :  Optional delta time (iDt)</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+tInstance:Update(dt)
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:SendToClient'>
+<h2><span class='state-dot' style='background:#3498db;'></span> CLASS:SendToClient</h2>
+<p><br>	Sends a packet to a single client.<br>	Validates client ID and packet table, applies default or provided flags for reliability.<br>	Triggers the 'send' event through EVENTS.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Client ID</li><li><span class='param-type table'>table</span> :  Packet data</li><li><span class='param-type number'>number</span> :  Optional channel ID (default 0)</li><li><span class='param-type string'>string</span> :  Optional flag ("reliable", "unreliable", "unsequenced")</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+local tPacket		= tInstance:BuildPacket("MSG_HELLO", {text="Hello"}, true, false)
+tInstance:SendToClient("client_01", packet, 0, "reliable")
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:SendToClients'>
+<h2><span class='state-dot' style='background:#3498db;'></span> CLASS:SendToClients</h2>
+<p><br>	Sends the same packet to all currently connected clients.<br>	Skips invalid or empty client entries.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type table'>table</span> :  Packet data</li><li><span class='param-type number'>number</span> :  Optional channel ID</li><li><span class='param-type string'>string</span> :  Optional flag</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+tInstance:SendToClients(packet)
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:BuildPacket'>
+<h2><span class='state-dot' style='background:#3498db;'></span> CLASS:BuildPacket</h2>
+<p><br>	Creates a network packet table with optional encryption and compression.<br>	If flags are not provided, defaults from server configuration are applied.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Message ID</li><li><span class='param-type default'>var</span> :  Packet content</li><li><span class='param-type boolean'>boolean</span> :  Optional encrypt flag</li><li><span class='param-type boolean'>boolean</span> :  Optional compress flag</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type table'>table</span> :  Packet containing ID, CONTENT, ENCRYPTED, COMPRESSED</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+local tPacket 		= tInstance:BuildPacket("MSG_UPDATE", {posX=10, posY=20}, true, true)
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:AddNetworkID'>
+<h2><span class='state-dot' style='background:#3498db;'></span> CLASS:AddNetworkID</h2>
+<p><br>	Adds a message ID to the server's valid network IDs list.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Message ID</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+tInstance:AddNetworkID("MSG_UPDATE")
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:SubNetworkID'>
+<h2><span class='state-dot' style='background:#3498db;'></span> CLASS:SubNetworkID</h2>
+<p><br>	Removes a message ID from the server's valid network IDs list.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Message ID</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+tInstance:SubNetworkID("MSG_UPDATE")
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:IsValidClient'>
+<h2><span class='state-dot' style='background:#3498db;'></span> CLASS:IsValidClient</h2>
+<p><br>	Checks if a client ID exists and is currently registered on the server.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Client ID</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type table'>table</span> :  Client data table if valid</li><li><span class='param-type boolean'>boolean</span> :  false if client is invalid</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+local clientData 	= tInstance:IsValidClient("client_01")
+if clientData then
+	print("Client is valid")
+end
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:IsValidMessage'>
+<h2><span class='state-dot' style='background:#3498db;'></span> CLASS:IsValidMessage</h2>
+<p><br>	Checks if a message ID is registered as valid for this server.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Message ID</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type boolean'>boolean</span> :  true if message ID is valid</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+if tInstance:IsValidMessage("MSG_HELLO") then
+	print("Message is allowed")
+end
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:AddHook'>
+<h2><span class='state-dot' style='background:#3498db;'></span> CLASS:AddHook</h2>
+<p><br>	Registers a callback hook for network events.<br>	Hooks can be executed on connect, disconnect, send, receive, or unhandled events.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Hook ID</li><li><span class='param-type function'>function</span> :  Callback function</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+tInstance:AddHook("onReceive", function(client, data)
+	print("Received data from", client, data)
+end)
+</code></pre></div></section>
+<section class='doc-block' id='CLASS:Destroy'>
+<h2><span class='state-dot' style='background:#3498db;'></span> CLASS:Destroy</h2>
+<p><br>	Cleans up the networking server instance.<br>	Kicks all clients, clears CLIENTS and NETWORK_ID tables, destroys HOOKS and EVENTS libraries,<br>	flushes the ENet host, and removes metatable references to fully release resources.<br></p>
+</section>
+    </main>
+</div>
+<script src="../../root/manifest.js"></script>
+<script src="../../main.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>{buildSidebarMenu(manifest)});</script>
+</body>
+</html>
