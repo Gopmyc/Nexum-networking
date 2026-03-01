@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="../../../style.css" rel="stylesheet">
+<title>Nexum Networking Documentation</title>
+</head>
+<body>
+<div class="container">
+	<aside class="sidebar"> <h2>📘 Nexum Networking Documentation </h2> <div class="sidebar-search"> <input type="text" id="sidebarSearch" placeholder="Search..." /> </div>
+ <nav> <ul id="sidebar-menu"></ul> </nav> </aside>
+   <main class="content">
+<section class='global-description'>
+	<h2>Overview</h2>
+	<p><br>	The HOOKS library of the Networking system.<br>	Provides a lightweight callback registry allowing modules to attach custom<br>	behaviour to specific hook identifiers.<br><br>	Hooks can be dynamically added, executed, and removed at runtime.<br>	Each hook ID may contain multiple callbacks which are executed sequentially<br>	when the hook is triggered.<br></p>
+</section>
+<section class='doc-block' id='LIBRARY:Initialize'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:Initialize</h2>
+<p><br>	Initializes the HOOKS library instance.<br><br>	Creates an internal hook registry (__HOOKS) used to store callback lists<br>	indexed by hook identifier. The registry is stored inside the library<br>	instance and managed through AddHook, CallHook, and RemoveHook.<br></p>
+<div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type table'>table</span> :  HOOKS library instance</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "HOOKS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:AddHook'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:AddHook</h2>
+<p><br>	Registers a callback function to a specific hook identifier.<br><br>	If the hook ID does not exist yet, a new callback list is created.<br>	The callback is appended to the hook list and its index within the list<br>	is returned.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Hook identifier</li><li><span class='param-type function'>function</span> :  Callback function executed when the hook is triggered</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type number'>number</span> :  Index of the callback within the hook list</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "HOOKS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+
+local iHookID = tLibrary:AddHook("onReceive", function(Data)
+	print("Hook triggered with data:", Data)
+end)
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:CallHook'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:CallHook</h2>
+<p><br>	Executes all callbacks registered under the specified hook identifier.<br><br>	Each callback receives the provided data argument. Callbacks are executed<br>	sequentially in the order they were registered.<br><br>	If no hooks are found for the given identifier, an error message is printed.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Hook identifier</li><li><span class='param-type default'>var</span> :  Data passed to each callback</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "HOOKS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+
+tLibrary:CallHook("onReceive", {message="Hello world"})
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:RemoveHook'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:RemoveHook</h2>
+<p><br>	Removes hooks associated with a given identifier.<br><br>	If a callback index is provided, only that specific callback is removed<br>	from the hook list. If no index is provided, the entire hook entry and<br>	all associated callbacks are removed.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Hook identifier</li><li><span class='param-type number'>number</span> :  Optional callback index</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type default'>var</span> :  Removed callback if an index was specified</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "HOOKS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+
+tLibrary:RemoveHook("onReceive", iHookID)
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:Destroy'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:Destroy</h2>
+<p><br>	Cleans up the HOOKS library instance.<br><br>	All registered callbacks are removed and the internal hook registry<br>	is cleared. Metatable references are removed to allow the instance<br>	to be fully garbage collected.<br></p>
+<div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "HOOKS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+
+tLibrary:Destroy()
+</code></pre></div></section>
+    </main>
+</div>
+<script src="../../../root/manifest.js"></script>
+<script src="../../../main.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>{buildSidebarMenu(manifest)});</script>
+</body>
+</html>
