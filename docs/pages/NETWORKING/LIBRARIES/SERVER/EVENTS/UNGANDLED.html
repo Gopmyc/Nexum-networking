@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="../../../../../style.css" rel="stylesheet">
+<title>Nexum Networking Documentation</title>
+</head>
+<body>
+<div class="container">
+	<aside class="sidebar"> <h2>📘 Nexum Networking Documentation </h2> <div class="sidebar-search"> <input type="text" id="sidebarSearch" placeholder="Search..." /> </div>
+ <nav> <ul id="sidebar-menu"></ul> </nav> </aside>
+   <main class="content">
+<section class='global-description'>
+	<h2>Overview</h2>
+	<p><br>	Server-side handler for undeclared or unrecognized messages in the Networking system.<br><br>	This event is triggered whenever a client sends a packet with a message<br>	identifier that has not been registered or is not handled by the server.<br>	It logs the attempt for diagnostic purposes and prevents further processing<br>	of the unknown packet.<br></p>
+</section>
+<section class='doc-block' id='LIBRARY:Call'>
+<h2><span class='state-dot' style='background:#3498db;'></span> LIBRARY:Call</h2>
+<p><br>	Handles unrecognized messages from clients.<br><br>	The function retrieves the connection identifier from the peer object<br>	and the packet identifier from the event data.<br><br>	A diagnostic message is printed indicating that the client attempted<br>	to send an undeclared message. No further processing is performed.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type table'>table</span> :  Server instance</li><li><span class='param-type table'>table</span> :  Event object containing peer and packet data</li></ul></div></section>
+    </main>
+</div>
+<script src="../../../../../root/manifest.js"></script>
+<script src="../../../../../main.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>{buildSidebarMenu(manifest)});</script>
+</body>
+</html>
