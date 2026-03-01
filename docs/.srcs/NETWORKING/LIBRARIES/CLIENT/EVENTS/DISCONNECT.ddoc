@@ -1,0 +1,25 @@
+@GLOBAL_DESCRIPTION:
+{
+	Client-side disconnect event handler of the Networking system.
+
+	This event is triggered when the client disconnects from a server.
+	It logs the disconnection details and cleans up the client peer reference.
+}
+
+@NAME:	LIBRARY:Call
+@STATE:	CLIENT
+@DESC:
+{
+	Handles a server disconnection event.
+
+	The function retrieves the connection identifier from the server peer
+	and prints a log message including the client ID, peer reference, and
+	timestamp of disconnection.
+
+	The client peer is then disconnected and the local reference is cleared
+	to prevent further usage.
+}
+
+@PARAM:
+	<table>	: Client instance
+	<table>	: Event object containing the server peer
