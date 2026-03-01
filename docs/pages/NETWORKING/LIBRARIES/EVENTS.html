@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="../../../style.css" rel="stylesheet">
+<title>Nexum Networking Documentation</title>
+</head>
+<body>
+<div class="container">
+	<aside class="sidebar"> <h2>📘 Nexum Networking Documentation </h2> <div class="sidebar-search"> <input type="text" id="sidebarSearch" placeholder="Search..." /> </div>
+ <nav> <ul id="sidebar-menu"></ul> </nav> </aside>
+   <main class="content">
+<section class='global-description'>
+	<h2>Overview</h2>
+	<p><br>	The EVENTS library of the Networking system.<br>	Handles event dispatching between the networking layer and registered event handlers.<br>	Provides a protected execution environment for event callbacks and utilities<br>	to build standardized event objects passed to handlers.<br></p>
+</section>
+<section class='doc-block' id='LIBRARY:Initialize'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:Initialize</h2>
+<p><br>	Initializes the EVENTS library with a set of predefined event handlers.<br><br>	The provided table is wrapped in a protected proxy (__EVENTS) which exposes<br>	read-only access to events while preventing external modification.<br>	If no events are provided, a warning is printed.<br><br>	Returns an EVENTS instance containing the protected event registry.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type table'>table</span> :  Optional table of events indexed by event type</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type table'>table</span> :  EVENTS library instance containing the internal __EVENTS registry</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "EVENTS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:Call'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:Call</h2>
+<p><br>	Dispatches a networking event to the corresponding registered handler.<br><br>	The handler is resolved using the event type and executed through xpcall<br>	to prevent runtime errors from crashing the networking system.<br>	If an error occurs during execution, it is captured and printed.<br><br>	The event passed to the handler is rebuilt through BuildEvent to ensure<br>	a normalized structure.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type table'>table</span> :  Server instance</li><li><span class='param-type table'>table</span> :  Event table containing type, peer, data, channel, and flag</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type boolean'>boolean</span> :  Success state returned by xpcall</li><li><span class='param-type default'>CLIENT/SERVER</span> :  Optional return value of the event handler</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "EVENTS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+
+local tEvent = {
+	type    = "receive",
+	peer    = udPeer,
+	data    = "Hello",
+	channel = 0,
+	flag    = "reliable"
+}
+
+tLibrary:Call(tInstance, tEvent)
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:BuildEvent'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:BuildEvent</h2>
+<p><br>	Creates a normalized event table used internally by the EVENTS system.<br><br>	The function validates required parameters and returns a structured<br>	event object containing the event type, peer, payload data, channel,<br>	and flag information.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Event type</li><li><span class='param-type default'>userdata</span> :  Peer object associated with the event</li><li><span class='param-type default'>var</span> :  Event data payload</li><li><span class='param-type number'>number</span> :  Optional channel ID</li><li><span class='param-type string'>string</span> :  Optional transmission flag</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type table'>table</span> :  Event object containing sType, udPeer, Data, iChannel, sFlag</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "EVENTS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+
+local tEvent = tLibrary:BuildEvent("receive", udPeer, "Hello", 0, "reliable")
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:Destroy'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:Destroy</h2>
+<p><br>	Cleans up the EVENTS library instance.<br><br>	Removes the internal __EVENTS registry, clears its metatable,<br>	and deletes all stored references to allow proper garbage collection.<br></p>
+<div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "EVENTS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+
+tLibrary:Destroy()
+</code></pre></div></section>
+    </main>
+</div>
+<script src="../../../root/manifest.js"></script>
+<script src="../../../main.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>{buildSidebarMenu(manifest)});</script>
+</body>
+</html>
