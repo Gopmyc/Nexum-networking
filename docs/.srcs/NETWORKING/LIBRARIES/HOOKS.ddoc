@@ -1,0 +1,134 @@
+@GLOBAL_DESCRIPTION:
+{
+	The HOOKS library of the Networking system.
+	Provides a lightweight callback registry allowing modules to attach custom
+	behaviour to specific hook identifiers.
+
+	Hooks can be dynamically added, executed, and removed at runtime.
+	Each hook ID may contain multiple callbacks which are executed sequentially
+	when the hook is triggered.
+}
+
+@NAME:	LIBRARY:Initialize
+@STATE:	CLIENT/SERVER
+@DESC:
+{
+	Initializes the HOOKS library instance.
+
+	Creates an internal hook registry (__HOOKS) used to store callback lists
+	indexed by hook identifier. The registry is stored inside the library
+	instance and managed through AddHook, CallHook, and RemoveHook.
+}
+@PARAM:
+	<nil>
+@RETURN:
+	<table>	: HOOKS library instance
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "HOOKS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+```
+
+@NAME:	LIBRARY:AddHook
+@STATE:	CLIENT/SERVER
+@DESC:
+{
+	Registers a callback function to a specific hook identifier.
+
+	If the hook ID does not exist yet, a new callback list is created.
+	The callback is appended to the hook list and its index within the list
+	is returned.
+}
+@PARAM:
+	<string>	: Hook identifier
+	<function>	: Callback function executed when the hook is triggered
+@RETURN:
+	<number>	: Index of the callback within the hook list
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "HOOKS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+
+local iHookID = tLibrary:AddHook("onReceive", function(Data)
+	print("Hook triggered with data:", Data)
+end)
+```
+
+@NAME:	LIBRARY:CallHook
+@STATE:	CLIENT/SERVER
+@DESC:
+{
+	Executes all callbacks registered under the specified hook identifier.
+
+	Each callback receives the provided data argument. Callbacks are executed
+	sequentially in the order they were registered.
+
+	If no hooks are found for the given identifier, an error message is printed.
+}
+@PARAM:
+	<string>	: Hook identifier
+	<var>		: Data passed to each callback
+@RETURN:
+	<nil>
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "HOOKS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+
+tLibrary:CallHook("onReceive", {message="Hello world"})
+```
+
+@NAME:	LIBRARY:RemoveHook
+@STATE:	CLIENT/SERVER
+@DESC:
+{
+	Removes hooks associated with a given identifier.
+
+	If a callback index is provided, only that specific callback is removed
+	from the hook list. If no index is provided, the entire hook entry and
+	all associated callbacks are removed.
+}
+@PARAM:
+	<string>	: Hook identifier
+	<number>	: Optional callback index
+@RETURN:
+	<var>		: Removed callback if an index was specified
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "HOOKS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+
+tLibrary:RemoveHook("onReceive", iHookID)
+```
+
+@NAME:	LIBRARY:Destroy
+@STATE:	CLIENT/SERVER
+@DESC:
+{
+	Cleans up the HOOKS library instance.
+
+	All registered callbacks are removed and the internal hook registry
+	is cleared. Metatable references are removed to allow the instance
+	to be fully garbage collected.
+}
+@PARAM:
+	<nil>
+@RETURN:
+	<nil>
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "HOOKS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+
+tLibrary:Destroy()
+```
