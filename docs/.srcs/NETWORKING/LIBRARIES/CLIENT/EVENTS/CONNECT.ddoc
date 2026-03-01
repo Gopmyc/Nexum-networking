@@ -1,0 +1,22 @@
+@GLOBAL_DESCRIPTION:
+{
+	Client-side connect event handler of the Networking system.
+
+	This event is triggered when the client successfully connects to a server.
+	It logs the connection details including the peer reference and connection ID.
+}
+
+@NAME:	LIBRARY:Call
+@STATE:	CLIENT
+@DESC:
+{
+	Handles a successful connection to the server.
+
+	The function retrieves the connection identifier from the peer object
+	and prints a log message indicating that the client has connected
+	to the server along with the peer reference.
+}
+
+@PARAM:
+	<table>	: Client instance
+	<table>	: Event object containing the server peer
