@@ -1,0 +1,24 @@
+@GLOBAL_DESCRIPTION:
+{
+	Client-side receive event handler of the Networking system.
+
+	This event is triggered when the client receives a packet from the server.
+	It decodes the packet using the client CODEC and dispatches the content
+	to the appropriate hook for processing.
+}
+
+@NAME:	LIBRARY:Call
+@STATE:	CLIENT
+@DESC:
+{
+	Handles an incoming packet from the server.
+
+	The function retrieves the connection identifier from the server peer,
+	decodes the raw packet data using the client CODEC to extract the packet
+	identifier and content, and then forwards the content to the hook system
+	using the packet identifier.
+}
+
+@PARAM:
+	<table>	: Client instance
+	<table>	: Event object containing server peer and raw packet data
