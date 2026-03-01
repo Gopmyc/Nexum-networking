@@ -1,0 +1,26 @@
+@GLOBAL_DESCRIPTION:
+{
+	Server-side handler for undeclared or unrecognized messages in the Networking system.
+
+	This event is triggered whenever a client sends a packet with a message
+	identifier that has not been registered or is not handled by the server.
+	It logs the attempt for diagnostic purposes and prevents further processing
+	of the unknown packet.
+}
+
+@NAME:	LIBRARY:Call
+@STATE:	SERVER
+@DESC:
+{
+	Handles unrecognized messages from clients.
+
+	The function retrieves the connection identifier from the peer object
+	and the packet identifier from the event data.
+
+	A diagnostic message is printed indicating that the client attempted
+	to send an undeclared message. No further processing is performed.
+}
+
+@PARAM:
+	<table>	: Server instance
+	<table>	: Event object containing peer and packet data
