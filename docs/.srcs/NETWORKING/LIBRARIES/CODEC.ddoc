@@ -1,0 +1,228 @@
+@GLOBAL_DESCRIPTION:  
+{  
+	The CODEC library of the Networking system.  
+	Handles data serialization, compression, encryption, and Base64 encoding/decoding for secure network communication.  
+	Supports JSON, ChaCha20, Poly1305, LZW, and Base64 libraries for full data protection and compression workflow.  
+}
+
+@NAME:	LIBRARY:Initialize  
+@STATE:	CLIENT/SERVER  
+@DESC:  
+{  
+	Initializes the CODEC instance with provided libraries and an encryption key.  
+	Validates that each dependency library exposes required functions.  
+	The encryption key is processed to support hex escape sequences.  
+	Returns a CODEC instance with JSON, CHACHA20, POLY1305, LZW, BASE64, and KEY fields.  
+}  
+@PARAM:  
+	<table>	: JSON library with encode and decode functions  
+	<table>	: ChaCha20 library with encrypt and decrypt functions  
+	<table>	: Poly1305 library with auth function  
+	<table>	: LZW library with compress and decompress functions  
+	<table>	: Base64 library with encode and decode functions  
+	<string>	: Encryption key string  
+@RETURN:  
+	<table>	: CODEC instance table  
+@EXAMPLE:  
+```lua
+local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+```
+
+@NAME:	LIBRARY:IsValidData  
+@STATE:	CLIENT/SERVER  
+@DESC:  
+{  
+	Checks if a data table conforms to CODEC format.  
+	Valid data must have an ID string, a CONTENT field, and boolean ENCRYPTED and COMPRESSED flags.  
+}  
+@PARAM:  
+	<table>	: Data table to validate  
+@RETURN:  
+	<boolean>	: true if valid, false otherwise  
+@EXAMPLE:  
+```lua
+local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local bValid        = tLibrary:IsValidData({ID="MSG", CONTENT="Hello", ENCRYPTED=false, COMPRESSED=true})  
+```
+
+@NAME:	LIBRARY:Compress  
+@STATE:	CLIENT/SERVER  
+@DESC:  
+{  
+	Compresses a string using the LZW library.  
+	Returns the compressed string or prints an error on failure.  
+}  
+@PARAM:  
+	<string>	: Content string to compress  
+@RETURN:  
+	<string>	: Compressed content  
+@EXAMPLE:  
+```lua
+local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sCompressed   = tLibrary:Compress("Some text data to compress")  
+```
+
+@NAME:	LIBRARY:Decompress  
+@STATE:	CLIENT/SERVER  
+@DESC:  
+{  
+	Decompresses a string using the LZW library.  
+	Returns the original content or prints an error on failure.  
+}  
+@PARAM:  
+	<string>	: Compressed content string  
+@RETURN:  
+	<string>	: Decompressed content  
+@EXAMPLE:  
+```lua
+local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sContent      = tLibrary:Decompress(sCompressed)  
+```
+
+@NAME:	LIBRARY:Encrypt  
+@STATE:	CLIENT/SERVER  
+@DESC:  
+{  
+	Encrypts a string with ChaCha20 and generates a Poly1305 authentication tag.  
+	Requires a key and a nonce.  
+}  
+@PARAM:  
+	<string>	: Content string to encrypt  
+	<string>	: Encryption key  
+	<string>	: Nonce string  
+@RETURN:  
+	<string>	: Encrypted content  
+	<string>	: Poly1305 tag  
+@EXAMPLE:  
+```lua
+local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sEncrypted, sTag = tLibrary:Encrypt("Hello World", "myKey", "123456789012")  
+```
+
+@NAME:	LIBRARY:Decrypt  
+@STATE:	CLIENT/SERVER  
+@DESC:  
+{  
+	Decrypts content using ChaCha20 and verifies integrity with Poly1305 tag.  
+	Returns the decrypted string or prints an error if the tag is invalid or decryption fails.  
+}  
+@PARAM:  
+	<string>	: Encrypted content  
+	<string>	: Encryption key  
+	<string>	: Nonce string  
+	<string>	: Poly1305 tag  
+@RETURN:  
+	<string>	: Decrypted content  
+@EXAMPLE:  
+```lua
+local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sDecrypted    = tLibrary:Decrypt(sEncrypted, "myKey", "123456789012", sTag)  
+```
+
+@NAME:	LIBRARY:Base64Encode  
+@STATE:	CLIENT/SERVER  
+@DESC:  
+{  
+	Encodes content, tag, and nonce to Base64.  
+	Returns Base64-encoded versions or prints errors if encoding fails.  
+}  
+@PARAM:  
+	<string>	: Content string  
+	<string>	: Poly1305 tag  
+	<string>	: Nonce string  
+@RETURN:  
+	<string>	: Base64-encoded content  
+	<string>	: Base64-encoded tag  
+	<string>	: Base64-encoded nonce  
+@EXAMPLE: 
+```lua 
+local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sB64Content, sB64Tag, sB64Nonce = tLibrary:Base64Encode(sEncrypted, sTag, "123456789012")  
+```
+
+@NAME:	LIBRARY:Base64Decode  
+@STATE:	CLIENT/SERVER  
+@DESC:  
+{  
+	Decodes Base64-encoded content, tag, and nonce.  
+	Returns decoded versions or prints errors if decoding fails.  
+}  
+@PARAM:  
+	<string>	: Base64-encoded content  
+	<string>	: Base64-encoded tag  
+	<string>	: Base64-encoded nonce  
+@RETURN:  
+	<string>	: Decoded content  
+	<string>	: Decoded tag  
+	<string>	: Decoded nonce  
+@EXAMPLE:  
+```lua
+local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sContent, sTag, sNonce = tLibrary:Base64Decode(sB64Content, sB64Tag, sB64Nonce)  
+```
+
+@NAME:	LIBRARY:Encode  
+@STATE:	CLIENT/SERVER  
+@DESC:  
+{  
+	Encodes a data table for network transmission.  
+	Applies JSON encoding, optional compression, optional encryption with Poly1305, and Base64 encoding.  
+}  
+@PARAM:  
+	<table>	: Data table with fields ID, CONTENT, ENCRYPTED, COMPRESSED  
+@RETURN:  
+	<string>	: JSON string ready to send  
+@EXAMPLE:  
+```lua
+local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sData         = tLibrary:Encode({ID="MSG_HELLO", CONTENT={text="Hi"}, ENCRYPTED=true, COMPRESSED=true})  
+```
+
+@NAME:	LIBRARY:Decode  
+@STATE:	CLIENT/SERVER  
+@DESC:  
+{  
+	Decodes a JSON string received from the network.  
+	Applies Base64 decoding, optional decryption, optional decompression, and JSON decoding.  
+	Returns the ID and original content table.  
+}  
+@PARAM:  
+	<string>	: JSON string received  
+@RETURN:  
+	<string>	: Message ID  
+	<table>	: Original content table  
+@EXAMPLE:  
+```lua
+local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sID, tContent = tLibrary:Decode(sData)  
+```
