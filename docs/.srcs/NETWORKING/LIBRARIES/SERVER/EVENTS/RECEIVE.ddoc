@@ -1,0 +1,41 @@
+@GLOBAL_DESCRIPTION:
+{
+	Server-side receive event handler of the Networking system.
+
+	This event is triggered when the server receives a packet from a
+	connected peer. It validates the client identity, decodes the packet
+	using the server codec and dispatches the message to the hook system.
+
+	If the packet identifier is unknown, the event is redirected to the
+	"unhandled" event pipeline so the application can process unsupported
+	or unexpected packets.
+}
+
+@NAME:	LIBRARY:Call
+@STATE:	SERVER
+@DESC:
+{
+	Handles an incoming packet from a client.
+
+	The function retrieves the connection identifier from the peer object
+	and verifies that the client exists in the server registry.
+
+	If the client is not registered, the message is rejected and a log
+	message is printed indicating that an unknown client attempted to
+	send data.
+
+	If the client is valid, the packet is decoded using the server CODEC
+	to extract the packet identifier and its content.
+
+	If the decoded packet identifier does not correspond to a registered
+	message, the system triggers the "unhandled" event through the event
+	dispatcher.
+
+	When the packet identifier is valid, the client activity timestamp
+	is updated and the associated hook is executed through the hook
+	system.
+}
+
+@PARAM:
+	<table>	: Server instance
+	<table>	: Event object containing peer and received packet data
