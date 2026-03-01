@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="../../../../../style.css" rel="stylesheet">
+<title>Nexum Networking Documentation</title>
+</head>
+<body>
+<div class="container">
+	<aside class="sidebar"> <h2>📘 Nexum Networking Documentation </h2> <div class="sidebar-search"> <input type="text" id="sidebarSearch" placeholder="Search..." /> </div>
+ <nav> <ul id="sidebar-menu"></ul> </nav> </aside>
+   <main class="content">
+<section class='global-description'>
+	<h2>Overview</h2>
+	<p><br>	Client-side receive event handler of the Networking system.<br><br>	This event is triggered when the client receives a packet from the server.<br>	It decodes the packet using the client CODEC and dispatches the content<br>	to the appropriate hook for processing.<br></p>
+</section>
+<section class='doc-block' id='LIBRARY:Call'>
+<h2><span class='state-dot' style='background:#f1c40f;'></span> LIBRARY:Call</h2>
+<p><br>	Handles an incoming packet from the server.<br><br>	The function retrieves the connection identifier from the server peer,<br>	decodes the raw packet data using the client CODEC to extract the packet<br>	identifier and content, and then forwards the content to the hook system<br>	using the packet identifier.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type table'>table</span> :  Client instance</li><li><span class='param-type table'>table</span> :  Event object containing server peer and raw packet data</li></ul></div></section>
+    </main>
+</div>
+<script src="../../../../../root/manifest.js"></script>
+<script src="../../../../../main.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>{buildSidebarMenu(manifest)});</script>
+</body>
+</html>
