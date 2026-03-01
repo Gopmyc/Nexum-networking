@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="../../../../../style.css" rel="stylesheet">
+<title>Nexum Networking Documentation</title>
+</head>
+<body>
+<div class="container">
+	<aside class="sidebar"> <h2>📘 Nexum Networking Documentation </h2> <div class="sidebar-search"> <input type="text" id="sidebarSearch" placeholder="Search..." /> </div>
+ <nav> <ul id="sidebar-menu"></ul> </nav> </aside>
+   <main class="content">
+<section class='global-description'>
+	<h2>Overview</h2>
+	<p><br>	Server-side connect event handler of the Networking system.<br><br>	This event is triggered when a client establishes a connection with the server.<br>	Its purpose is to log the connection and register the client inside the server<br>	client registry for later communication and tracking.<br></p>
+</section>
+<section class='doc-block' id='LIBRARY:Call'>
+<h2><span class='state-dot' style='background:#3498db;'></span> LIBRARY:Call</h2>
+<p><br>	Handles a client connection event.<br><br>	The function retrieves the peer connection identifier and prints a formatted<br>	log message containing the client ID, peer reference, and connection timestamp.<br><br>	The connected client is then stored in the server CLIENTS table using the<br>	connection ID as key. The stored value contains the peer object and the<br>	current server time, allowing the server to track active clients.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type table'>table</span> :  Server instance</li><li><span class='param-type table'>table</span> :  Event object containing peer and connection information</li></ul></div></section>
+    </main>
+</div>
+<script src="../../../../../root/manifest.js"></script>
+<script src="../../../../../main.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>{buildSidebarMenu(manifest)});</script>
+</body>
+</html>
