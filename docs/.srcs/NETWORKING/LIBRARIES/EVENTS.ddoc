@@ -1,0 +1,119 @@
+@GLOBAL_DESCRIPTION:
+{
+	The EVENTS library of the Networking system.
+	Handles event dispatching between the networking layer and registered event handlers.
+	Provides a protected execution environment for event callbacks and utilities
+	to build standardized event objects passed to handlers.
+}
+
+@NAME:	LIBRARY:Initialize
+@STATE:	CLIENT/SERVER
+@DESC:
+{
+	Initializes the EVENTS library with a set of predefined event handlers.
+
+	The provided table is wrapped in a protected proxy (__EVENTS) which exposes
+	read-only access to events while preventing external modification.
+	If no events are provided, a warning is printed.
+
+	Returns an EVENTS instance containing the protected event registry.
+}
+@PARAM:
+	<table>	: Optional table of events indexed by event type
+@RETURN:
+	<table>	: EVENTS library instance containing the internal __EVENTS registry
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "EVENTS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+```
+
+@NAME:	LIBRARY:Call
+@STATE:	CLIENT/SERVER
+@DESC:
+{
+	Dispatches a networking event to the corresponding registered handler.
+
+	The handler is resolved using the event type and executed through xpcall
+	to prevent runtime errors from crashing the networking system.
+	If an error occurs during execution, it is captured and printed.
+
+	The event passed to the handler is rebuilt through BuildEvent to ensure
+	a normalized structure.
+}
+@PARAM:
+	<table>	: Server instance
+	<table>	: Event table containing type, peer, data, channel, and flag
+@RETURN:
+	<boolean>	: Success state returned by xpcall
+	<CLIENT/SERVER>		: Optional return value of the event handler
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "EVENTS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+
+local tEvent = {
+	type    = "receive",
+	peer    = udPeer,
+	data    = "Hello",
+	channel = 0,
+	flag    = "reliable"
+}
+
+tLibrary:Call(tInstance, tEvent)
+```
+
+@NAME:	LIBRARY:BuildEvent
+@STATE:	CLIENT/SERVER
+@DESC:
+{
+	Creates a normalized event table used internally by the EVENTS system.
+
+	The function validates required parameters and returns a structured
+	event object containing the event type, peer, payload data, channel,
+	and flag information.
+}
+@PARAM:
+	<string>	: Event type
+	<userdata>	: Peer object associated with the event
+	<var>		: Event data payload
+	<number>	: Optional channel ID
+	<string>	: Optional transmission flag
+@RETURN:
+	<table>	: Event object containing sType, udPeer, Data, iChannel, sFlag
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "EVENTS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+
+local tEvent = tLibrary:BuildEvent("receive", udPeer, "Hello", 0, "reliable")
+```
+
+@NAME:	LIBRARY:Destroy
+@STATE:	CLIENT/SERVER
+@DESC:
+{
+	Cleans up the EVENTS library instance.
+
+	Removes the internal __EVENTS registry, clears its metatable,
+	and deletes all stored references to allow proper garbage collection.
+}
+@PARAM:
+	<nil>
+@RETURN:
+	<nil>
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+local sLibraryName  = "EVENTS"
+local tLibrary      = tInstance:GetLibrary(sLibraryName)
+
+tLibrary:Destroy()
+```
