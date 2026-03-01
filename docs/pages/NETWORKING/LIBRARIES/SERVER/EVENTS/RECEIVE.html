@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="../../../../../style.css" rel="stylesheet">
+<title>Nexum Networking Documentation</title>
+</head>
+<body>
+<div class="container">
+	<aside class="sidebar"> <h2>📘 Nexum Networking Documentation </h2> <div class="sidebar-search"> <input type="text" id="sidebarSearch" placeholder="Search..." /> </div>
+ <nav> <ul id="sidebar-menu"></ul> </nav> </aside>
+   <main class="content">
+<section class='global-description'>
+	<h2>Overview</h2>
+	<p><br>	Server-side receive event handler of the Networking system.<br><br>	This event is triggered when the server receives a packet from a<br>	connected peer. It validates the client identity, decodes the packet<br>	using the server codec and dispatches the message to the hook system.<br><br>	If the packet identifier is unknown, the event is redirected to the<br>	"unhandled" event pipeline so the application can process unsupported<br>	or unexpected packets.<br></p>
+</section>
+<section class='doc-block' id='LIBRARY:Call'>
+<h2><span class='state-dot' style='background:#3498db;'></span> LIBRARY:Call</h2>
+<p><br>	Handles an incoming packet from a client.<br><br>	The function retrieves the connection identifier from the peer object<br>	and verifies that the client exists in the server registry.<br><br>	If the client is not registered, the message is rejected and a log<br>	message is printed indicating that an unknown client attempted to<br>	send data.<br><br>	If the client is valid, the packet is decoded using the server CODEC<br>	to extract the packet identifier and its content.<br><br>	If the decoded packet identifier does not correspond to a registered<br>	message, the system triggers the "unhandled" event through the event<br>	dispatcher.<br><br>	When the packet identifier is valid, the client activity timestamp<br>	is updated and the associated hook is executed through the hook<br>	system.<br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type table'>table</span> :  Server instance</li><li><span class='param-type table'>table</span> :  Event object containing peer and received packet data</li></ul></div></section>
+    </main>
+</div>
+<script src="../../../../../root/manifest.js"></script>
+<script src="../../../../../main.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>{buildSidebarMenu(manifest)});</script>
+</body>
+</html>
