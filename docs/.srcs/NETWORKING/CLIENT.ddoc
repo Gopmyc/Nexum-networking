@@ -1,0 +1,172 @@
+@GLOBAL_DESCRIPTION:
+{
+	The Networking client class of Nexum.  
+	Manages client-side connection to a Nexum server, packet sending, event handling, hooks,  
+	encryption and compression of outgoing messages, and integration with the Nexum runtime.  
+	Allows configuration-based defaults with optional per-connection overrides for secure communication.
+}
+
+@NAME:	CLASS:Initialize
+@STATE:	CLIENT
+@DESC:
+{
+	Initializes the Networking client instance.  
+	Validates ENet library dependency and optional connection parameters  
+	(address, port, channels, timeout, encryption key, default encryption/compression).  
+	Creates an ENet host, connects to the specified server, initializes HOOKS, CODEC, and EVENTS libraries.  
+	Returns a client instance table containing all network state and handlers.
+}
+@PARAM:
+	<string>	: Optional server IP address
+	<number>	: Optional server port
+	<number>	: Optional maximum number of channels
+	<number>	: Optional message timeout
+	<string>	: Optional encryption key
+	<boolean>	: Optional default encryption flag
+	<boolean>	: Optional default compression flag
+@RETURN:
+	<table>	: Client instance containing HOST, PEER, HOOKS, CODEC, EVENTS, DEFAULT_ENCRYPT, DEFAULT_COMPRESS, MESS_TIMEOUT
+@EXAMPLE:
+```lua
+	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+```
+
+@NAME:	CLASS:Update
+@STATE:	CLIENT
+@DESC:
+{
+	Processes incoming network events from the server and dispatches them through the EVENTS system.  
+	Each event is safely executed with xpcall to catch and report errors.
+}
+@PARAM:
+	<number>	: Optional delta time (iDt)
+@RETURN:
+	<nil>
+@EXAMPLE:
+```lua
+	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+	tInstance:Update(dt)
+```
+
+@NAME:	CLASS:SendToServer
+@STATE:	CLIENT
+@DESC:
+{
+	Sends a packet to the connected server.  
+	Applies default or provided flags for reliability and unsequenced sending.  
+	Triggers the 'send' event through EVENTS.
+}
+@PARAM:
+	<table>		: Packet data
+	<number>	: Optional channel ID (default 0)
+	<string>	: Optional flag ("reliable", "unreliable", "unsequenced")
+@RETURN:
+	<nil>
+@EXAMPLE:
+```lua
+	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")	
+	local tPacket       = tInstance:BuildPacket("MSG_HELLO", {text="Hello Server"}, true, false)
+	tInstance:SendToServer(tPacket, 0, "reliable")
+```
+
+@NAME:	CLASS:BuildPacket
+@STATE:	CLIENT
+@DESC:
+{
+	Creates a network packet table with optional encryption and compression.  
+	If flags are not provided, defaults from client configuration are applied.
+}
+@PARAM:
+	<string>	: Message ID
+	<var>		: Packet content
+	<boolean>	: Optional encrypt flag
+	<boolean>	: Optional compress flag
+@RETURN:
+	<table>	: Packet containing ID, CONTENT, ENCRYPTED, COMPRESSED
+@EXAMPLE:
+```lua
+	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+	local tPacket       = tInstance:BuildPacket("MSG_UPDATE", {posX=10, posY=20}, true, true)
+```
+
+@NAME:	CLASS:IsConnected
+@STATE:	CLIENT
+@DESC:
+{
+	Checks if the client is currently connected to the server.
+}
+@PARAM:
+	<nil>
+@RETURN:
+	<boolean>	: true if connected, false otherwise
+@EXAMPLE:
+```lua
+	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+	if tInstance:IsConnected() then
+		print("Connected to server")
+	end
+```
+
+@NAME:	CLASS:AddHook
+@STATE:	CLIENT
+@DESC:
+{
+	Registers a callback hook for client-side network events.  
+	Hooks can be executed on connect, disconnect, send, or receive events.
+}
+@PARAM:
+	<string>	: Hook ID
+	<function>	: Callback function
+@RETURN:
+	<nil>
+@EXAMPLE:
+```lua
+	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+	tInstance:AddHook("onReceive", function(peer, data)
+		print("Received data from server:", data)
+	end)
+```
+
+@NAME:	CLASS:GetPeer
+@STATE:	CLIENT
+@DESC:
+{
+	Returns the ENet peer object representing the connection to the server.
+}
+@PARAM:
+	<nil>
+@RETURN:
+	<userdata>	: ENet peer
+@EXAMPLE:
+```lua
+	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+	local tPeer         = tInstance:GetPeer()
+```
+
+@NAME:	CLASS:Destroy
+@STATE:	CLIENT
+@DESC:
+{
+	Cleans up the networking client instance.  
+	Disconnects from the server, destroys HOOKS and EVENTS libraries,  
+	flushes the ENet host, and removes metatable references to fully release resources.
+}
+@PARAM:
+	<nil>
+@RETURN:
+	<nil>
+@EXAMPLE:
+```lua
+	local Nexum         = require("srcs")
+	local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")
+	local sLibraryName	= "CODEC"
+	local tLibrary		= tInstance:GetLibrary(sLibraryName)
+	tInstance:Destroy()
+```
