@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="../../../style.css" rel="stylesheet">
+<title>Nexum Networking Documentation</title>
+</head>
+<body>
+<div class="container">
+	<aside class="sidebar"> <h2>📘 Nexum Networking Documentation </h2> <div class="sidebar-search"> <input type="text" id="sidebarSearch" placeholder="Search..." /> </div>
+ <nav> <ul id="sidebar-menu"></ul> </nav> </aside>
+   <main class="content">
+<section class='global-description'>
+	<h2>Overview</h2>
+	<p>  <br>	The CODEC library of the Networking system.  <br>	Handles data serialization, compression, encryption, and Base64 encoding/decoding for secure network communication.  <br>	Supports JSON, ChaCha20, Poly1305, LZW, and Base64 libraries for full data protection and compression workflow.  <br></p>
+</section>
+<section class='doc-block' id='LIBRARY:Initialize'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:Initialize</h2>
+<p>  <br>	Initializes the CODEC instance with provided libraries and an encryption key.  <br>	Validates that each dependency library exposes required functions.  <br>	The encryption key is processed to support hex escape sequences.  <br>	Returns a CODEC instance with JSON, CHACHA20, POLY1305, LZW, BASE64, and KEY fields.  <br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type table'>table</span> :  JSON library with encode and decode functions</li><li><span class='param-type table'>table</span> :  ChaCha20 library with encrypt and decrypt functions</li><li><span class='param-type table'>table</span> :  Poly1305 library with auth function</li><li><span class='param-type table'>table</span> :  LZW library with compress and decompress functions</li><li><span class='param-type table'>table</span> :  Base64 library with encode and decode functions</li><li><span class='param-type string'>string</span> :  Encryption key string</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type table'>table</span> :  CODEC instance table</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:IsValidData'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:IsValidData</h2>
+<p>  <br>	Checks if a data table conforms to CODEC format.  <br>	Valid data must have an ID string, a CONTENT field, and boolean ENCRYPTED and COMPRESSED flags.  <br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type table'>table</span> :  Data table to validate</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type boolean'>boolean</span> :  true if valid, false otherwise</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local bValid        = tLibrary:IsValidData({ID="MSG", CONTENT="Hello", ENCRYPTED=false, COMPRESSED=true})  
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:Compress'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:Compress</h2>
+<p>  <br>	Compresses a string using the LZW library.  <br>	Returns the compressed string or prints an error on failure.  <br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Content string to compress</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type string'>string</span> :  Compressed content</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sCompressed   = tLibrary:Compress("Some text data to compress")  
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:Decompress'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:Decompress</h2>
+<p>  <br>	Decompresses a string using the LZW library.  <br>	Returns the original content or prints an error on failure.  <br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Compressed content string</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type string'>string</span> :  Decompressed content</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sContent      = tLibrary:Decompress(sCompressed)  
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:Encrypt'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:Encrypt</h2>
+<p>  <br>	Encrypts a string with ChaCha20 and generates a Poly1305 authentication tag.  <br>	Requires a key and a nonce.  <br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Content string to encrypt</li><li><span class='param-type string'>string</span> :  Encryption key</li><li><span class='param-type string'>string</span> :  Nonce string</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type string'>string</span> :  Encrypted content</li><li><span class='param-type string'>string</span> :  Poly1305 tag</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sEncrypted, sTag = tLibrary:Encrypt("Hello World", "myKey", "123456789012")  
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:Decrypt'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:Decrypt</h2>
+<p>  <br>	Decrypts content using ChaCha20 and verifies integrity with Poly1305 tag.  <br>	Returns the decrypted string or prints an error if the tag is invalid or decryption fails.  <br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Encrypted content</li><li><span class='param-type string'>string</span> :  Encryption key</li><li><span class='param-type string'>string</span> :  Nonce string</li><li><span class='param-type string'>string</span> :  Poly1305 tag</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type string'>string</span> :  Decrypted content</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sDecrypted    = tLibrary:Decrypt(sEncrypted, "myKey", "123456789012", sTag)  
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:Base64Encode'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:Base64Encode</h2>
+<p>  <br>	Encodes content, tag, and nonce to Base64.  <br>	Returns Base64-encoded versions or prints errors if encoding fails.  <br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Content string</li><li><span class='param-type string'>string</span> :  Poly1305 tag</li><li><span class='param-type string'>string</span> :  Nonce string</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type string'>string</span> :  Base64-encoded content</li><li><span class='param-type string'>string</span> :  Base64-encoded tag</li><li><span class='param-type string'>string</span> :  Base64-encoded nonce</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sB64Content, sB64Tag, sB64Nonce = tLibrary:Base64Encode(sEncrypted, sTag, "123456789012")  
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:Base64Decode'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:Base64Decode</h2>
+<p>  <br>	Decodes Base64-encoded content, tag, and nonce.  <br>	Returns decoded versions or prints errors if decoding fails.  <br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  Base64-encoded content</li><li><span class='param-type string'>string</span> :  Base64-encoded tag</li><li><span class='param-type string'>string</span> :  Base64-encoded nonce</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type string'>string</span> :  Decoded content</li><li><span class='param-type string'>string</span> :  Decoded tag</li><li><span class='param-type string'>string</span> :  Decoded nonce</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sContent, sTag, sNonce = tLibrary:Base64Decode(sB64Content, sB64Tag, sB64Nonce)  
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:Encode'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:Encode</h2>
+<p>  <br>	Encodes a data table for network transmission.  <br>	Applies JSON encoding, optional compression, optional encryption with Poly1305, and Base64 encoding.  <br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type table'>table</span> :  Data table with fields ID, CONTENT, ENCRYPTED, COMPRESSED</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type string'>string</span> :  JSON string ready to send</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sData         = tLibrary:Encode({ID="MSG_HELLO", CONTENT={text="Hi"}, ENCRYPTED=true, COMPRESSED=true})  
+</code></pre></div></section>
+<section class='doc-block' id='LIBRARY:Decode'>
+<h2><span class='state-dot' style='background:linear-gradient(135deg,#f1c40f 50%,#3498db 50%);'></span> LIBRARY:Decode</h2>
+<p>  <br>	Decodes a JSON string received from the network.  <br>	Applies Base64 decoding, optional decryption, optional decompression, and JSON decoding.  <br>	Returns the ID and original content table.  <br></p>
+<div class='doc-subblock'><h3>Parameters</h3><ul><li><span class='param-type string'>string</span> :  JSON string received</li></ul></div><div class='doc-subblock'><h3>Returns</h3><ul><li><span class='param-type string'>string</span> :  Message ID</li><li><span class='param-type table'>table</span> :  Original content table</li></ul></div><div class='doc-subblock code-block'><pre><code class='language-lua'>local Nexum         = require("srcs")  
+local tInstance     = Nexum:Instanciate("networking", "SUPER-CLIENT")  
+local sLibraryName  = "CODEC"  
+local tLibrary      = tInstance:GetLibrary(sLibraryName)  
+local sID, tContent = tLibrary:Decode(sData)  
+</code></pre></div></section>
+    </main>
+</div>
+<script src="../../../root/manifest.js"></script>
+<script src="../../../main.js"></script>
+<script>window.addEventListener('DOMContentLoaded',()=>{buildSidebarMenu(manifest)});</script>
+</body>
+</html>
