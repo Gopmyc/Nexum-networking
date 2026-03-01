@@ -1,0 +1,241 @@
+@GLOBAL_DESCRIPTION:
+{
+	The Networking server class of Nexum.  
+	Manages client-server communication, event handling, hooks, message IDs,  
+	encryption and compression of packets, and integration with the Nexum runtime.  
+	It allows configuration-based defaults and per-packet overrides for secure and optimized communication.
+}
+
+@NAME:	CLASS:Initialize
+@STATE:	SERVER
+@DESC:
+{
+	Initializes the Networking server instance.  
+	Validates ENet library dependency and required network configuration parameters  
+	(IP, PORT, MAX_CLIENTS, MAX_CHANNELS, bandwidth, timeout, encryption/compression defaults).  
+	Creates the ENet host, initializes HOOKS, CODEC, and EVENTS libraries.  
+	Returns a server instance table containing all network state and handlers.
+}
+@PARAM:
+	<nil>
+@RETURN:
+	<table>	: Server instance containing HOST, CLIENTS, NETWORK_ID, HOOKS, CODEC, EVENTS, DEFAULT_ENCRYPT, DEFAULT_COMPRESS
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+```
+
+@NAME:	CLASS:GetHost
+@STATE:	SERVER
+@DESC:
+{
+	Returns the underlying ENet host object used for server communication.
+}
+@PARAM:
+	<nil>
+@RETURN:
+	<userdata>	: ENet host
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+local tHost			= tInstance:GetHost()
+```
+
+@NAME:	CLASS:Update
+@STATE:	SERVER
+@DESC:
+{
+	Processes incoming network events and dispatches them through the EVENTS system.
+	Each event is safely executed with xpcall to catch errors.
+}
+@PARAM:
+	<number>	: Optional delta time (iDt)
+@RETURN:
+	<nil>
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+tInstance:Update(dt)
+```
+
+@NAME:	CLASS:SendToClient
+@STATE:	SERVER
+@DESC:
+{
+	Sends a packet to a single client.
+	Validates client ID and packet table, applies default or provided flags for reliability.
+	Triggers the 'send' event through EVENTS.
+}
+@PARAM:
+	<string>	: Client ID
+	<table>		: Packet data
+	<number>	: Optional channel ID (default 0)
+	<string>	: Optional flag ("reliable", "unreliable", "unsequenced")
+@RETURN:
+	<nil>
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+local tPacket		= tInstance:BuildPacket("MSG_HELLO", {text="Hello"}, true, false)
+tInstance:SendToClient("client_01", packet, 0, "reliable")
+```
+
+@NAME:	CLASS:SendToClients
+@STATE:	SERVER
+@DESC:
+{
+	Sends the same packet to all currently connected clients.
+	Skips invalid or empty client entries.
+}
+@PARAM:
+	<table>		: Packet data
+	<number>	: Optional channel ID
+	<string>	: Optional flag
+@RETURN:
+	<nil>
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+tInstance:SendToClients(packet)
+```
+
+@NAME:	CLASS:BuildPacket
+@STATE:	SERVER
+@DESC:
+{
+	Creates a network packet table with optional encryption and compression.
+	If flags are not provided, defaults from server configuration are applied.
+}
+@PARAM:
+	<string>	: Message ID
+	<var>		: Packet content
+	<boolean>	: Optional encrypt flag
+	<boolean>	: Optional compress flag
+@RETURN:
+	<table>	: Packet containing ID, CONTENT, ENCRYPTED, COMPRESSED
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+local tPacket 		= tInstance:BuildPacket("MSG_UPDATE", {posX=10, posY=20}, true, true)
+```
+
+@NAME:	CLASS:AddNetworkID
+@STATE:	SERVER
+@DESC:
+{
+	Adds a message ID to the server's valid network IDs list.
+}
+@PARAM:
+	<string>	: Message ID
+@RETURN:
+	<nil>
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+tInstance:AddNetworkID("MSG_UPDATE")
+```
+
+@NAME:	CLASS:SubNetworkID
+@STATE:	SERVER
+@DESC:
+{
+	Removes a message ID from the server's valid network IDs list.
+}
+@PARAM:
+	<string>	: Message ID
+@RETURN:
+	<nil>
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+tInstance:SubNetworkID("MSG_UPDATE")
+```
+
+@NAME:	CLASS:IsValidClient
+@STATE:	SERVER
+@DESC:
+{
+	Checks if a client ID exists and is currently registered on the server.
+}
+@PARAM:
+	<string>	: Client ID
+@RETURN:
+	<table>		: Client data table if valid
+	<boolean>	: false if client is invalid
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+local clientData 	= tInstance:IsValidClient("client_01")
+if clientData then
+	print("Client is valid")
+end
+```
+
+@NAME:	CLASS:IsValidMessage
+@STATE:	SERVER
+@DESC:
+{
+	Checks if a message ID is registered as valid for this server.
+}
+@PARAM:
+	<string>	: Message ID
+@RETURN:
+	<boolean>	: true if message ID is valid
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+if tInstance:IsValidMessage("MSG_HELLO") then
+	print("Message is allowed")
+end
+```
+
+@NAME:	CLASS:AddHook
+@STATE:	SERVER
+@DESC:
+{
+	Registers a callback hook for network events.
+	Hooks can be executed on connect, disconnect, send, receive, or unhandled events.
+}
+@PARAM:
+	<string>	: Hook ID
+	<function>	: Callback function
+@RETURN:
+<nil>
+@EXAMPLE:
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+tInstance:AddHook("onReceive", function(client, data)
+	print("Received data from", client, data)
+end)
+```
+
+@NAME:	CLASS:Destroy
+@STATE:	SERVER
+@DESC:
+{
+	Cleans up the networking server instance.
+	Kicks all clients, clears CLIENTS and NETWORK_ID tables, destroys HOOKS and EVENTS libraries,
+	flushes the ENet host, and removes metatable references to fully release resources.
+}
+@PARAM:
+	<nil>
+@RETURN:
+	<nil>
+@EXAMPLE:
+
+```lua
+local Nexum         = require("srcs")
+local tInstance     = Nexum:Instanciate("networking", "SUPER-SERVER")
+tInstance:Destroy()
+```
