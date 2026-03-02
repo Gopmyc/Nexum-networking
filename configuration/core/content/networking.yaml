@@ -11,7 +11,7 @@ DEPENDENCIES:
 IS_BINARY:        false
 LOAD_SUBFOLDERS:  true
 ENV_PROFILE:
-  - "CORE"
+  - "UNLOCKED"
 SIDES:
   CLIENT: true
   SERVER: true
